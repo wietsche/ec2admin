@@ -1,0 +1,32 @@
+Busii EC2 Backup Administration
+------------------------------------
+This file explains how the various PERL modules should be used for administrating backups of the EC2 environment.
+
+create_snap.pl
+--------------
+* Running the script makes a snapshot of the data volume attached to the instance, 'RT Server'.
+* The data volume is identified by the tag Name='Data Volume'. (Any volume having this tag will be the subject of the scipt.)
+* The newly created snapshot can be identified in the EC2 Management console by the description, e.g.: "Backup: Thu Aug 22 09:14:35 2013"
+
+delete_old_snap.pl
+-------------------
+* Running the script deletes snapshots created by create_snap.pl, so that only the number if snapshots indicated by $numsnap is maintained.
+* $numsnap can be changed at the top of the script
+* delete_old_snap.pl can be run asynhronoulsy with create_snap.pl
+
+create_machine_image.pl
+-----------------------
+* Running the script create a AMI (Amazon Machine Image) of the 'RT Server'.
+* The Server is identified by the tag Name='RT Server'
+* The newly created image has a unique name: 'RT Server Backup Image + timestamp, e.g. 'RT Server Backup Image 2013-08-22_14-30-17'
+* All backup images have the description: 'RT Server Backup Image'
+
+delete_old_image.pl
+-------------------
+* Running the script deletes machine images created by create_machine_image.pl, so that only the number if images indicated by $numimg is maintained.
+* $numimg can be changed at the top of the script
+* delete_old_image.pl can be run asynhronoulsy with create_machine_image.pl
+
+
+
+
