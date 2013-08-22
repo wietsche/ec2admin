@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# setup keys
+
+export EC2_PRIVATE_KEY=~/ec2/pk-QVNJPBQNTDJ3GEJWZNHIZHHFBMJVUT4J.pem 
+export EC2_CERT=~/ec2/cert-QVNJPBQNTDJ3GEJWZNHIZHHFBMJVUT4J.pem
