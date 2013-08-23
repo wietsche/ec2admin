@@ -35,7 +35,7 @@ my $ec2command =
   . $ec2comment . '\''
   . ' -b \'/dev/sdg=none\''
   ;
-
+print($ec2command);
 my $ec2result = qx($ec2command);
 
 print( $ec2result. "\n" );
