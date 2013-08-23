@@ -2,6 +2,11 @@ Busii EC2 Backup Administration
 ------------------------------------
 This file explains how the various PERL modules should be used for administrating backups of the EC2 environment.
 
+Before using the files, private and public keys must be configured.
+
+
+
+
 create_snap.pl
 --------------
 * Running the script makes a snapshot of the data volume attached to the instance, 'RT Server'.

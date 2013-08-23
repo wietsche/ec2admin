@@ -7,7 +7,7 @@ use Time::localtime;
 use Data::Dumper;
 
 #------------------------------------------------------------------------------------------
-#$numimg determines the number of images allowed.
+#$numimg determines the number of MACHINE images allowed.
 #This script deletes images so that only the $numimg most recent images are kept.
 
 my $numimg = 2;
@@ -41,25 +41,38 @@ foreach my $row (@iattr) {
 
 }
 
-@imtab = sort { $a->[2] cmp $b->[2] } @imtab;   #sort accending on image date
+@imtab = sort { $a->[2] cmp $b->[2] } @imtab;    #sort accending on image date
 
-#print Dumper(@imtab);
-
-my $numimdel = $rc - $numimg;    #number of images to be deleted
+my $numimdel = $rc - $numimg;                    #number of images to be deleted
 
 if ( $numimdel > 0 ) {
-    print "Deleting: " . $numimdel . " machine images...\n";
+    print "Deleting: " . $numimdel . " machine image(s)...\n";
 
     for ( my $count = 0 ; $count < $numimdel ; $count++ ) {
-        print( "deleting image : " . $imtab[$count][1] . "\n" );
-        my $delcom = 'ec2-deregister ' . $imtab[$count][1];
 
-        #print($delcom."\n");
-        qx($delcom);
+        print( "Deleting image : " . $imtab[$count][1] . "\n" );
+        my $delcom = 'ec2-deregister ' . $imtab[$count][1];
+        print( $delcom. "\n" );
+        my $getdiskimages =
+          'ec2-describe-images ' . $imtab[$count][1] . ' | grep snap';
+        my $images_txt = qx($getdiskimages);
+        my @diskimages = split( /\n/, $images_txt );
+
+        qx($delcom); #Delete AMI
+
+        print("Delete disk images.....\n");
+        foreach my $diskrow (@diskimages) {
+            my @diskattr = split( /\t/, $diskrow );
+            print Dumper(@diskattr);
+            my $deldisk = 'ec2-delete-snapshot ' . $diskattr[4];
+            print $deldisk. "\n";
+            qx($deldisk); #Delete snapshots associated with deleted AMI
+
+        }
+
     }
 }
 else {
     print "\nNothing to delete\n";
 
 }
-

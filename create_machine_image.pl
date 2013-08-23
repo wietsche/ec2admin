@@ -32,7 +32,9 @@ my $ec2command =
   . ' -n \'RT Server Backup Image '
   . $timestamp
   . '\' -d  \''
-  . $ec2comment . '\'';
+  . $ec2comment . '\''
+  . ' -b \'/dev/sdg=none\''
+  ;
 
 my $ec2result = qx($ec2command);
 
