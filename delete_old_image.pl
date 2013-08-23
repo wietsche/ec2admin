@@ -15,7 +15,7 @@ my $numimg = 2;
 #------------------------------------------------------------------------------------------
 
 my $getimages =
-'ec2-describe-images -F description=\'RT Server Backup Image\',name=\'RT Server Backup Image*\',status=available';
+'ec2-describe-images -F name=\'RT Server Backup Image*\',status=available';
 print( $getimages. "\n" );
 my $images = qx($getimages);
 
@@ -54,21 +54,33 @@ if ( $numimdel > 0 ) {
         my $delcom = 'ec2-deregister ' . $imtab[$count][1];
         print( $delcom. "\n" );
         my $getdiskimages =
-          'ec2-describe-images ' . $imtab[$count][1] . ' | grep snap';
+          'ec2-describe-images ' . $imtab[$count][1] . ' | grep -oP \'snap-\w+\'';
+
         my $images_txt = qx($getdiskimages);
         my @diskimages = split( /\n/, $images_txt );
 
+        print Dumper(@diskimages);
         qx($delcom); #Delete AMI
 
         print("Delete disk images.....\n");
-        foreach my $diskrow (@diskimages) {
-            my @diskattr = split( /\t/, $diskrow );
-            print Dumper(@diskattr);
-            my $deldisk = 'ec2-delete-snapshot ' . $diskattr[4];
-            print $deldisk. "\n";
-            qx($deldisk); #Delete snapshots associated with deleted AMI
+        
+        foreach my $snapid (@diskimages)
+        {
+               my $deldisk = 'ec2-delete-snapshot ' . $snapid;     
+               print $deldisk. "\n";
+               qx($deldisk); #Delete snapshots associated with deleted AMI
+           
+           }
+        
+        
+        # foreach my $diskrow (@diskimages) {
+            # my @diskattr = split( /\t/, $diskrow );
+            # print Dumper(@diskattr);
+            # my $deldisk = 'ec2-delete-snapshot ' . $diskattr[4];
+            # print $deldisk. "\n";
+            # qx($deldisk); #Delete snapshots associated with deleted AMI
 
-        }
+        # }
 
     }
 }
