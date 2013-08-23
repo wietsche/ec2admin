@@ -33,7 +33,8 @@ my $ec2command =
   . $timestamp
   . '\' -d  \''
   . $ec2comment . '\''
-  . ' -b \'/dev/sdg=none\''
+#  . ' -b \'/dev/sdg=none\''
+    . ' --no-reboot'
   ;
 print($ec2command);
 my $ec2result = qx($ec2command);
